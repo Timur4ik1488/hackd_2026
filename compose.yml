@@ -1,0 +1,39 @@
+networks:
+  dev:
+
+services:
+  db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    shm_size: 256mb
+    environment:
+      - POSTGRES_USER=hackathon_user
+      - POSTGRES_PASSWORD=123123
+      - POSTGRES_DB=hackathon_db
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/postgres_data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hackathon_user -d hackathon_db"] #сначала юзер, потом название БД
+      interval: 10s
+      timeout: 30s
+      retries: 5
+
+    ports:
+      - 5432:5432
+
+    networks:
+      - dev
+
+  adminer:
+    image: adminer
+    container_name: adm_hack
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - dev
+
+volumes:
+  postgres_data:
