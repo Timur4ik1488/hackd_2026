@@ -1,5 +1,6 @@
 networks:
-  dev:
+  prod:
+    driver: bridge
 
 services:
   db:
@@ -7,15 +8,15 @@ services:
     restart: unless-stopped
     shm_size: 256mb
     environment:
-      - POSTGRES_USER=hackathon_user
-      - POSTGRES_PASSWORD=123123
-      - POSTGRES_DB=hackathon_db
+      - POSTGRES_USER=umir_user
+      - POSTGRES_PASSWORD=0607078219
+      - POSTGRES_DB=umir_db
 
     volumes:
       - postgres_data:/var/lib/postgresql/postgres_data
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U hackathon_user -d hackathon_db"] #сначала юзер, потом название БД
+      test: ["CMD-SHELL", "pg_isready -U umir_user -d umir_db"] #сначала юзер, потом название БД
       interval: 10s
       timeout: 30s
       retries: 5
@@ -24,7 +25,7 @@ services:
       - 5432:5432
 
     networks:
-      - dev
+      - prod
 
   adminer:
     image: adminer
@@ -33,7 +34,7 @@ services:
     ports:
       - 7000:8080
     networks:
-      - dev
+      - prod
 
 volumes:
   postgres_data:
