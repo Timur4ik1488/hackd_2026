@@ -3,36 +3,41 @@ networks:
     driver: bridge
 
 services:
-  db:
-    image: postgres:17-alpine
-    restart: unless-stopped
-    shm_size: 256mb
-    environment:
-      - POSTGRES_USER=umir_user
-      - POSTGRES_PASSWORD=0607078219
-      - POSTGRES_DB=umir_db
 
+  db:
+    image: postgres:alpine
+    container_name: tula_prod_db
+    shm_size: 256mb
+    restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+    # env_file:
+    #   - .env
+
+    environment:
+      - POSTGRES_USER=tula_prod_user
+      - POSTGRES_PASSWORD=8219
+      - POSTGRES_DB=tula_prod_db
+
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U umir_user -d umir_db"] #сначала юзер, потом название БД
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -U tula_prod_user -d tula_prod_db"]
+      interval: 8s
       timeout: 30s
       retries: 5
 
     ports:
-      - 5432:5432
+      - 5435:5432
 
     networks:
       - prod
 
   adminer:
     image: adminer
-    container_name: adm_hack
+    container_name: tula_prod_adminer
     restart: always
     ports:
-      - 7000:8080
+      - 7001:8080
     networks:
       - prod
 
